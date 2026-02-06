@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luca Del Conte - Informatico</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        primary: { 500: '#3b82f6', 600: '#2563eb' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: rgba(156, 163, 175, 0.5); border-radius: 20px; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #bg-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: #0f172a;
+        }
+
+        .skill-tag { @apply px-3 py-1 rounded-lg text-xs font-semibold border border-opacity-20 bg-transparent transition-all cursor-default; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-100 min-h-screen flex items-center justify-center p-4 overflow-x-hidden">
+
+    <div id="bg-container"></div>
+
+    <main class="w-full max-w-6xl glass-panel shadow-2xl rounded-3xl overflow-hidden flex flex-col md:flex-row h-[90vh] md:h-auto">
+        
+        <!-- Sidebar Foto -->
+        <div class="md:w-1/3 relative h-64 md:h-auto bg-slate-800 shrink-0">
+            <img src="Luca.jpg" 
+                 onerror="this.src='https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/f79ae93d-680c-44c2-9718-0f2a70b59613/df8ftht-5df05a88-df70-43f6-9a9f-5102de9c7652.png/v1/fill/w_1280,h_720/rick_sanchez__rick_and_morty__render_by_ty50ntheskeleton_df8ftht-fullview.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIwIiwicGF0aCI6Ii9mL2Y3OWFlOTNkLTY4MGMtNDRjMi05NzE4LTBmMmE3MGI1OTYxMy9kZjhmdGh0LTVkZjA1YTg4LWRmNzAtNDNmNi05YTlmLTUxMDJkZTljNzY1Mi5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.0gOwAONYxPgWrIiuYS-lpAHSLvWYsfDMupnyAfABiyY'" 
+                 alt="Luca Del Conte" 
+                 class="w-full h-full object-cover object-top">
+            
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent md:hidden"></div>
+            <div class="absolute bottom-4 left-4 text-white md:hidden">
+                <h1 class="text-2xl font-bold">Luca Del Conte</h1>
+                <p class="text-primary-500 text-sm font-semibold" data-i18n="role">Informatico</p>
+            </div>
+        </div>
+
+        <!-- Contenuto -->
+        <div class="md:w-2/3 flex flex-col overflow-hidden">
+            <div class="p-8 md:p-10 overflow-y-auto custom-scroll h-full">
+                
+                <!-- Desktop Header -->
+                <div class="hidden md:flex justify-between items-start mb-6">
+                    <div>
+                        <h1 class="text-4xl font-bold text-white mb-1">Luca Del Conte</h1>
+                        <p class="text-lg text-primary-500 font-bold tracking-tight" data-i18n="role">Informatico</p>
+                    </div>
+                    <div class="flex bg-slate-800/50 p-1 rounded-lg border border-slate-700">
+                        <button onclick="setLanguage('it')" id="btn-it" class="px-3 py-1 rounded-md text-sm font-bold bg-slate-600 text-white transition-all">IT</button>
+                        <button onclick="setLanguage('en')" id="btn-en" class="px-3 py-1 rounded-md text-sm font-bold text-slate-400 transition-all">EN</button>
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                <div class="mb-10">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
+                        <i class="fas fa-user-circle"></i> <span data-i18n="profile_title">Profilo</span>
+                    </h2>
+                    <p class="text-slate-300 leading-relaxed text-sm md:text-base mb-4" data-i18n="bio">
+                        Professionista italiano dedicato allo sviluppo dell'Intelligenza Artificiale...
+                    </p>
+                    <div class="p-3 bg-slate-800/40 rounded-lg border-l-4 border-primary-500 italic text-sm text-slate-400">
+                        <span data-i18n="quote">"Non ci sono lezioni che sprechino il tempo di gioco delle nostre vite..."</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    
+                    <!-- ESPERIENZA -->
+                    <div class="space-y-8">
+                        <section>
+                            <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5 flex items-center gap-2">
+                                <i class="fas fa-briefcase"></i> <span data-i18n="exp_title">Esperienza Lavorativa</span>
+                            </h2>
+                            <div class="border-l-2 border-slate-700 ml-2 space-y-8">
+                                <div class="pl-6 relative">
+                                    <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-primary-500 border-4 border-slate-900"></span>
+                                    <h3 class="font-bold text-white text-sm" data-i18n="role1">Data Analyst & Sviluppatore AI</h3>
+                                    <p class="text-[10px] text-slate-500 font-mono mb-1">UniTo | 10/2024 - 08/2025</p>
+                                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="desc1">Sviluppo di modelli Machine Learning per l'analisi di anomalie aziendali.</p>
+                                </div>
+                                <div class="pl-6 relative">
+                                    <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-slate-700 border-4 border-slate-900"></span>
+                                    <h3 class="font-bold text-white text-sm" data-i18n="role2">Consulente IT</h3>
+                                    <p class="text-[10px] text-slate-500 font-mono mb-1">OpiCons | 12/2022 - 08/2023</p>
+                                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="desc2">Gestione Hardware/Software, infrastruttura di rete e Cybersecurity aziendale.</p>
+                                </div>
+                                <div class="pl-6 relative">
+                                    <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-slate-700 border-4 border-slate-900"></span>
+                                    <h3 class="font-bold text-white text-sm" data-i18n="role3">Specialista IT Esterno</h3>
+                                    <p class="text-[10px] text-slate-500 font-mono mb-1">Caredio Group | 01/2022 - 08/2023</p>
+                                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="desc3">Gestione Hardware/Software, infrastruttura di rete e Cybersecurity aziendale.</p>
+                                </div>
+                                <div class="pl-6 relative">
+                                    <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-slate-700 border-4 border-slate-900"></span>
+                                    <h3 class="font-bold text-white text-sm" data-i18n="role4">Tecnico IT</h3>
+                                    <p class="text-[10px] text-slate-500 font-mono mb-1">Dedalus Piemonte | 06/2021 - 12/2022</p>
+                                    <p class="text-xs text-slate-400 leading-relaxed" data-i18n="desc4">Gestione Hardware/Software, infrastruttura di rete e Cybersecurity presso azienda sanitaria.</p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- DETTAGLI + COMPETENZE -->
+                    <div class="space-y-10">
+                        <section>
+                            <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5 flex items-center gap-2">
+                                <i class="fas fa-info-circle"></i> <span data-i18n="details_title">Dettagli</span>
+                            </h2>
+                            <ul class="space-y-5 text-sm text-slate-300">
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-map-marker-alt w-4 text-primary-500 mt-1"></i>
+                                    <div>
+                                        <span class="block font-semibold text-slate-200" data-i18n="loc_label">Sede</span>
+                                        <span data-i18n="location">Asti, Italia</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-graduation-cap w-4 text-primary-500 mt-1"></i>
+                                    <div>
+                                        <span class="block font-semibold text-slate-200" data-i18n="deg_label">Istruzione</span>
+                                        <span data-i18n="degree">Laurea Triennale in Informatica (UniTo)</span>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-language w-4 text-primary-500 mt-1"></i>
+                                    <div>
+                                        <span class="block font-semibold text-slate-200" data-i18n="lang_label">Lingue</span>
+                                        <span data-i18n="languages">Italiano (Madrelingua), Inglese (B2/C1)</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <h2 class="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5 flex items-center gap-2">
+                                <i class="fas fa-code"></i> <span data-i18n="tech_title">Competenze Tecniche</span>
+                            </h2>
+                            <div class="space-y-5">
+                                <div>
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase block mb-2" data-i18n="tech_cat1">AI & Data</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="skill-tag text-blue-400 border-blue-400/30">Python</span>
+                                        <span class="skill-tag text-blue-400 border-blue-400/30">RStudio</span>
+                                        <span class="skill-tag text-blue-400 border-blue-400/30">SQL</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase block mb-2" data-i18n="tech_cat2">Sviluppo</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="skill-tag text-orange-400 border-orange-400/30">C++</span>
+                                        <span class="skill-tag text-orange-400 border-orange-400/30">Java</span>
+                                        <span class="skill-tag text-orange-400 border-orange-400/30">C</span>
+                                        <span class="skill-tag text-orange-400 border-orange-400/30">Lua</span>
+                                        <span class="skill-tag text-purple-400 border-purple-400/30">React</span>
+                                        <span class="skill-tag text-purple-400 border-purple-400/30">TS/JS</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-slate-500 uppercase block mb-2" data-i18n="tech_cat3">Strumenti</span>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="skill-tag text-emerald-400 border-emerald-400/30">LaTeX</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Footer Azioni -->
+                <div class="mt-12 flex flex-col sm:flex-row gap-3">
+                    <button onclick="copyEmail()" class="flex-1 bg-white text-slate-900 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-200 transition-colors">
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="contact">Contattami</span>
+                    </button>
+                    <a href="Curriculum.pdf" download="Curriculum_Luca_Del_Conte.pdf" target="_blank" class="flex-1 border border-slate-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors">
+                        <i class="fas fa-download"></i> <span data-i18n="cv">Scarica CV</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-6 py-2 rounded-full text-xs font-bold shadow-2xl opacity-0 transition-opacity pointer-events-none z-50 flex items-center gap-2">
+        <i class="fas fa-check-circle text-green-500"></i>
+        <span id="toast-text" data-i18n="email_copied">EMAIL COPIATA!</span>
+    </div>
+
+    <!-- Background Shader -->
+    <script id="vertexShader" type="x-shader/x-vertex">
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        precision highp float;
+        uniform float iTime;
+        uniform vec3 iResolution;
+        uniform vec2 iMouse;
+        uniform float bendInfluence;
+
+        const vec3 BLACK = vec3(0.06, 0.09, 0.16); 
+        const vec3 BLUE  = vec3(47.0, 75.0, 162.0) / 255.0;
+        // Nuovo colore Pink/Magenta (#e945f5)
+        const vec3 PINK  = vec3(233.0, 69.0, 245.0) / 255.0;
+
+        mat2 rotate(float r) { return mat2(cos(r), sin(r), -sin(r), cos(r)); }
+
+        // Funzione Wave
+        float wave(vec2 uv, float offset, vec2 screenUv, vec2 mouseUv, float bendStrength) {
+            float time = iTime * 0.8;
+            float amp = sin(offset + time * 0.2) * 0.3;
+            float y = sin(uv.x + offset + time * 0.1) * amp;
+            
+            // Effetto Interazione Mouse
+            vec2 d = screenUv - mouseUv;
+            float influence = exp(-dot(d, d) * 5.0); 
+            y += (mouseUv.y - screenUv.y) * influence * bendStrength * bendInfluence;
+            
+            return 0.015 / (abs(uv.y - y) + 0.005);
+        }
+
+        void main() {
+            vec2 uv = (2.0 * gl_FragCoord.xy - iResolution.xy) / iResolution.y;
+            uv.y *= -1.0;
+            vec2 mouseUv = (2.0 * iMouse - iResolution.xy) / iResolution.y;
+            mouseUv.y *= -1.0;
+            
+            vec3 col = BLACK;
+
+            // Creiamo un gradiente orizzontale che mixa BLUE e PINK
+            // gl_FragCoord.x / iResolution.x va da 0.0 (sinistra) a 1.0 (destra)
+            vec3 waveColor = mix(BLUE, PINK, gl_FragCoord.x / iResolution.x);
+
+            // WAVE BOTTOM (Onda in basso)
+            for (int i = 0; i < 5; i++) {
+                float fi = float(i);
+                vec2 ruv = uv * rotate(0.4 * log(length(uv) + 1.0));
+                col += waveColor * wave(ruv + vec2(0.05 * fi + 2.0, -0.7), 1.5 + 0.2 * fi, uv, mouseUv, -0.5) * 0.2;
+            }
+
+            // WAVE MIDDLE (Onda centrale)
+            for (int i = 0; i < 5; i++) {
+                float fi = float(i);
+                vec2 ruv = uv * rotate(0.2 * log(length(uv) + 1.0));
+                col += waveColor * wave(ruv + vec2(0.05 * fi + 5.0, 0.0), 2.0 + 0.15 * fi, uv, mouseUv, -0.5) * 0.6;
+            }
+
+            // WAVE TOP (Onda in alto)
+            for (int i = 0; i < 5; i++) {
+                float fi = float(i);
+                vec2 ruv = uv * rotate(-0.4 * log(length(uv) + 1.0));
+                ruv.x *= -1.0;
+                col += waveColor * wave(ruv + vec2(0.05 * fi + 10.0, 0.5), 1.0 + 0.2 * fi, uv, mouseUv, -0.5) * 0.15;
+            }
+
+            gl_FragColor = vec4(col, 1.0);
+        }
+    </script>
+
+    <script>
+        const container = document.getElementById('bg-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        container.appendChild(renderer.domElement);
+
+        const uniforms = { 
+            iTime: { value: 0 }, 
+            iResolution: { value: new THREE.Vector3() }, 
+            iMouse: { value: new THREE.Vector2(-1000, -1000) }, 
+            bendInfluence: { value: 0 } 
+        };
+
+        const material = new THREE.ShaderMaterial({ 
+            uniforms, 
+            vertexShader: document.getElementById('vertexShader').textContent, 
+            fragmentShader: document.getElementById('fragmentShader').textContent 
+        });
+        
+        scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+
+        function resize() { 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+            uniforms.iResolution.value.set(window.innerWidth, window.innerHeight, 1); 
+        }
+        window.addEventListener('resize', resize); 
+        resize();
+
+        // Mouse interaction logic
+        let targetMouse = new THREE.Vector2(-1000, -1000);
+        let targetInfluence = 0;
+        let currentInfluence = 0;
+        
+        window.addEventListener('mousemove', e => {
+            targetMouse.set(e.clientX, window.innerHeight - e.clientY);
+            targetInfluence = 1.0;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            targetInfluence = 0.0;
+        });
+
+        function animate(t) { 
+            uniforms.iTime.value = t/1000; 
+            
+            // Damping for mouse movement
+            uniforms.iMouse.value.lerp(targetMouse, 0.05);
+            
+            // Damping for influence (fade in/out effect)
+            currentInfluence += (targetInfluence - currentInfluence) * 0.05;
+            uniforms.bendInfluence.value = currentInfluence;
+            
+            renderer.render(scene, camera); 
+            requestAnimationFrame(animate); 
+        }
+        requestAnimationFrame(animate);
+
+        const translations = {
+            it: {
+                role: "Informatico",
+                profile_title: "Profilo",
+                bio: "Professionista italiano dedito allo sviluppo dell'Intelligenza Artificiale, con un focus radicato in Data Science e Cybersecurity. Oriento la mia crescita personale e tecnica verso soluzioni innovative ad alto impatto, con un interesse specifico per le applicazioni AI nei settori Healthcare e Fitness.",
+                quote: "\"Non ci sono lezioni che sprechino il tempo di gioco delle nostre vite. Che si tratti di un fallimento o di un successo, imparerai sempre qualcosa che ti aiuterà a salire di livello.\"",
+                exp_title: "Esperienza Lavorativa",
+                tech_title: "Competenze Tecniche",
+                tech_cat1: "AI & Data",
+                tech_cat2: "Sviluppo",
+                tech_cat3: "Strumenti",
+                details_title: "Dettagli",
+                loc_label: "Sede",
+                deg_label: "Istruzione",
+                lang_label: "Lingue",
+                location: "Asti, Italia",
+                degree: "Laurea Triennale in Informatica (UniTo)",
+                languages: "Italiano (Madrelingua), Inglese (B2/C1)",
+                role1: "Data Analyst & Sviluppatore AI",
+                role2: "Consulente IT",
+                role3: "Specialista IT Esterno",
+                role4: "Tecnico IT",
+                desc1: "Sviluppo di modelli Machine Learning per l'analisi di anomalie aziendali.",
+                desc2: "Gestione Hardware/Software, infrastruttura di rete e Cybersecurity aziendale.",
+                desc3: "Gestione Hardware/Software, infrastruttura di rete e Cybersecurity aziendale.",
+                desc4: "Gestione Hardware/Software, infrastruttura di rete e Cybersecurity presso azienda sanitaria.",
+                contact: "Contattami",
+                cv: "Scarica CV",
+                email_copied: "EMAIL COPIATA!"
+            },
+            en: {
+                role: "Computer Scientist",
+                profile_title: "Profile",
+                bio: "Dedicated Italian professional focused on Artificial Intelligence development, with deep roots in Data Science and Cybersecurity. I drive my personal and technical growth towards high-impact innovative solutions, with a specific focus on AI applications in Healthcare and Fitness sectors.",
+                quote: "\"There are no lessons that waste the game-play time of our lives. Whether it's a failure or a success, you will always learn something that helps you level up.\"",
+                exp_title: "Work Experience",
+                tech_title: "Tech Stack",
+                tech_cat1: "AI & Data",
+                tech_cat2: "Development",
+                tech_cat3: "Tools",
+                details_title: "Details",
+                loc_label: "Location",
+                deg_label: "Education",
+                lang_label: "Languages",
+                location: "Asti, Italy",
+                degree: "B.Sc. in Computer Science (UniTo)",
+                languages: "Italian (Native), English (B2/C1)",
+                role1: "Data Analyst & AI Developer",
+                role2: "IT Consultant",
+                role3: "External IT Specialist",
+                role4: "IT Technician",
+                desc1: "Development of Machine Learning models for business anomaly analysis.",
+                desc2: "Hardware/Software, network infrastructure and corporate Cybersecurity management.",
+                desc3: "Hardware/Software, network infrastructure and corporate Cybersecurity management.",
+                desc4: "Hardware/Software, network infrastructure and Cybersecurity at healthcare company.",
+                contact: "Contact Me",
+                cv: "Download CV",
+                email_copied: "EMAIL COPIED!"
+            }
+        };
+
+        let currentLang = 'it';
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                    el.classList.add('fade-in');
+                    setTimeout(() => el.classList.remove('fade-in'), 400);
+                }
+            });
+            document.getElementById('btn-it').className = lang === 'it' ? "px-3 py-1 rounded-md text-sm font-bold bg-slate-600 text-white transition-all" : "px-3 py-1 rounded-md text-sm font-bold text-slate-400 transition-all";
+            document.getElementById('btn-en').className = lang === 'en' ? "px-3 py-1 rounded-md text-sm font-bold bg-slate-600 text-white transition-all" : "px-3 py-1 rounded-md text-sm font-bold text-slate-400 transition-all";
+        }
+
+        function copyEmail() {
+            navigator.clipboard.writeText("workspace.delconteluca@gmail.com");
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = translations[currentLang].email_copied;
+            toast.style.opacity = '1';
+            setTimeout(() => toast.style.opacity = '0', 2500);
+        }
+
+        window.onload = () => setLanguage('it');
+    </script>
+</body>
+</html>
