@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light" data-anim="on">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Luca Del Conte — Computer Scientist</title>
+
+<!-- Favicon (spherical knowledge graph — matches the on-page monogram) -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#efe8d8" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)" />
+
+<!-- SEO -->
+<meta name="description" content="Luca Del Conte — Computer Scientist working across AI, Data Science & Cybersecurity, from machine-learning research to cloud infrastructure." />
+<link rel="canonical" href="https://lucadlc.github.io/" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Luca Del Conte — Computer Scientist" />
+<meta property="og:description" content="AI · Data Science · Cybersecurity. From machine-learning research to cloud infrastructure: building innovative, high-impact solutions." />
+<meta property="og:image" content="https://lucadlc.github.io/Luca.jpg" />
+<meta property="og:url" content="https://lucadlc.github.io/" />
+<meta property="og:type" content="website" />
+
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Luca Del Conte — Computer Scientist" />
+<meta name="twitter:description" content="AI · Data Science · Cybersecurity. From machine-learning research to cloud infrastructure: building innovative, high-impact solutions." />
+<meta name="twitter:image" content="https://lucadlc.github.io/Luca.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@500;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#efe8d8; --paper-2:#e7dfcb; --panel:#f4eee1; --card:#f1ebdd;
+  --ink:#191512; --ink-soft:#4a4339; --muted:#8c8473; --line:rgba(25,21,18,.16); --line-2:rgba(25,21,18,.30);
+  --accent:#d8533a; --accent-2:#bf8a2c; --accent-soft:rgba(216,83,58,.14);
+  --font-display:'JetBrains Mono',ui-monospace,monospace;
+  --font-mono:'JetBrains Mono','SFMono-Regular',ui-monospace,monospace;
+  --font-dot:'Doto','JetBrains Mono',monospace;
+}
+[data-theme="dark"]{
+  --paper:#100f0c; --paper-2:#16140f; --panel:#1a1813; --card:#16140f;
+  --ink:#efe8d8; --ink-soft:#bcb39f; --muted:#7d7565; --line:rgba(239,232,216,.16); --line-2:rgba(239,232,216,.32);
+  --accent-soft:rgba(216,83,58,.22);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--font-mono); font-size:14px; line-height:1.55;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:28px; min-height:100vh;
+  background-image:radial-gradient(rgba(25,21,18,.04) 1px, transparent 1.4px);
+  background-size:4px 4px;
+}
+[data-theme="dark"] body{ background-image:radial-gradient(rgba(239,232,216,.045) 1px, transparent 1.4px); }
+a{color:inherit; text-decoration:none;}
+.up{text-transform:uppercase; letter-spacing:.16em;}
+
+/* ===== fixed language toggle (follows scroll) ===== */
+.lang-seg{position:fixed; top:20px; right:20px; z-index:80;
+  display:flex; border:1.5px solid var(--ink); border-radius:999px; overflow:hidden;
+  font-family:var(--font-mono); font-weight:700; font-size:12px; letter-spacing:.1em;
+  background:var(--card); cursor:pointer; user-select:none;
+  box-shadow:0 8px 24px -10px rgba(0,0,0,.5);}
+.lang-seg span{padding:9px 15px; transition:background .18s ease, color .18s ease; color:var(--muted);}
+.lang-seg .lf-sep{display:none;}
+.lang-seg[data-lang="it"] .lf-it{background:var(--ink); color:var(--paper);}
+.lang-seg[data-lang="en"] .lf-en{background:var(--ink); color:var(--paper);}
+.lang-seg:hover{transform:translateY(-1px);}
+
+/* ===== CARD ===== */
+.card{
+  position:relative; width:min(1180px,100%); background:var(--card);
+  border:1.5px solid var(--line-2); display:grid; grid-template-columns:392px minmax(0,1fr);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.5);
+}
+.card::before{ content:""; position:absolute; inset:7px; border:1px solid var(--line); pointer-events:none; z-index:3; }
+
+/* ----- photo column ----- */
+.photo{position:relative; background:var(--paper-2); border-right:1.5px solid var(--line-2); overflow:hidden; display:flex; flex-direction:column;}
+.photo-sticky{position:sticky; top:0; height:100vh; max-height:1060px; min-height:560px; flex:none;}
+.dotfield{position:relative; flex:1 1 auto; min-height:180px; border-top:1px solid var(--line); overflow:hidden;}
+.dotfield canvas{display:block; width:100%; height:100%;}
+.dotfield .df-cap{position:absolute; top:10px; left:12px; z-index:2; font-family:var(--font-mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); pointer-events:none;}
+.portrait{width:100%; height:100%; object-fit:cover; object-position:center top; display:block; background:var(--paper-2);}
+.photo .pcorner{position:absolute; z-index:6; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); background:var(--card); padding:3px 7px; border:1px solid var(--line);}
+.photo .tl{top:16px; left:16px;} .photo .bl{bottom:16px; left:16px; color:var(--accent); border-color:var(--accent);}
+.photo .pv{position:absolute; right:14px; top:0; bottom:0; display:flex; align-items:center; z-index:6;}
+.photo .pv span{writing-mode:vertical-rl; font-family:var(--font-mono); font-size:10px; letter-spacing:.32em; text-transform:uppercase; color:var(--muted); background:var(--card); padding:8px 3px;}
+.photo .frame{position:absolute; inset:14px; border:1px solid var(--line); z-index:5; pointer-events:none;}
+.photo .pcontact{position:absolute; bottom:16px; right:14px; z-index:6; display:flex; flex-direction:column; gap:6px; align-items:flex-end;}
+.photo .pcontact a{font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; color:var(--ink-soft); background:var(--card); padding:5px 9px; border:1px solid var(--line); max-width:calc(392px - 60px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.photo .pcontact a b{color:var(--accent); font-weight:400; margin-right:3px;}
+.photo .pcontact a:hover{color:var(--accent); border-color:var(--accent);}
+
+/* ----- content column ----- */
+.content{padding:30px 34px 26px; display:flex; flex-direction:column; gap:18px; position:relative; z-index:2;}
+
+.top{display:flex; align-items:flex-start; justify-content:space-between; gap:18px;}
+.idblock{display:flex; gap:15px; align-items:center;}
+.mono-mark{width:54px; height:54px; border:1.5px solid var(--ink); border-radius:50%; display:grid; place-items:center; flex:none; position:relative;}
+.mono-mark::after{content:""; position:absolute; inset:-5px; border:1px dashed var(--line-2); border-radius:50%; animation:spin 18s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.mg-canvas{position:absolute; inset:0; width:100%; height:100%; border-radius:50%;}
+.name{font-family:var(--font-dot); font-weight:500; font-size:clamp(38px,5vw,58px); letter-spacing:.02em; line-height:.96; margin:0; color:var(--ink);}
+.role{display:flex; align-items:center; gap:9px; font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin-top:11px;}
+.role .pdot{width:8px; height:8px; border-radius:50%; background:var(--accent); flex:none; position:relative;}
+.role .pdot::after{content:""; position:absolute; inset:0; border-radius:50%; background:var(--accent); animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite;}
+@keyframes ping{0%{transform:scale(1);opacity:.7;}70%,100%{transform:scale(2.6);opacity:0;}}
+.role-name{display:inline-flex; align-items:baseline;}
+.caret{display:inline-block; width:7px; height:.95em; background:var(--accent); margin-left:3px; vertical-align:-1px; animation:blink 1.1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+.contactline{display:flex; gap:7px 16px; flex-wrap:wrap; margin-top:9px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted);}
+.contactline a{color:var(--ink-soft);} .contactline a:hover{color:var(--accent);}
+.contactline b{color:var(--accent); font-weight:400;}
+.role-contact{display:flex; gap:18px; flex-wrap:wrap; margin-top:11px;}
+.role-contact a{font-family:var(--font-mono); font-size:11px; letter-spacing:.03em; color:var(--ink-soft); background:transparent; padding:0; border:none; display:inline-flex; align-items:center; gap:7px; transition:color .18s ease;}
+.role-contact a b{color:var(--accent); font-weight:400;}
+.role-contact a:hover{color:var(--accent);}
+
+/* divider */
+.rule{height:1px; background:var(--line); position:relative;}
+.rule::before{content:""; position:absolute; left:0; top:0; width:46px; height:1px; background:var(--accent);}
+
+/* section label */
+.lab{font-family:var(--font-mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:9px; margin-bottom:11px;}
+.lab .n{color:var(--accent); font-weight:700;}
+.lab .ln{flex:1; height:1px; background:var(--line);}
+
+.bio{font-family:var(--font-mono); font-size:13px; line-height:1.62; color:var(--ink-soft); margin:0;}
+.bio b{color:var(--ink); font-weight:700;}
+.quote{font-family:var(--font-mono); font-size:12px; line-height:1.55; color:var(--ink-soft); margin:0; padding-left:14px; border-left:2px solid var(--accent);}
+.quote .pt{color:var(--accent);}
+
+/* stats strip */
+.stats{display:flex; gap:8px; flex-wrap:wrap;}
+.stat{flex:1; min-width:90px; border:1px solid var(--line); padding:11px 13px; display:flex; flex-direction:column; gap:3px; position:relative; overflow:hidden;}
+.stat::after{content:""; position:absolute; left:0; bottom:0; height:2px; width:100%; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform .8s ease .2s;}
+.stat.in::after{transform:scaleX(1);}
+.stat .v{font-family:var(--font-display); font-weight:800; font-size:24px; letter-spacing:-.02em; line-height:1;}
+.stat:nth-child(1) .v{color:var(--accent);}
+.stat .k{font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+
+/* band */
+.band{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:28px;}
+.col{display:flex; flex-direction:column; gap:20px;}
+
+/* timeline (exp + edu) */
+.tl-list{position:relative; padding-left:20px;}
+.tl-list::before{content:""; position:absolute; left:4px; top:8px; bottom:10px; width:1.5px; background:var(--line-2);}
+.tl-item{position:relative; padding:0 0 15px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-item .dot{position:absolute; left:-20px; top:4px; width:9px; height:9px; border-radius:50%; background:var(--card); border:1.5px solid var(--muted);}
+.tl-item.now .dot{border-color:var(--accent); background:var(--accent);}
+.tl-item.now .dot::after{content:""; position:absolute; inset:-3px; border-radius:50%; border:1.5px solid var(--accent); animation:ping 1.9s cubic-bezier(0,0,.2,1) infinite;}
+.tl-item .r{font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:-.01em; color:var(--ink); line-height:1.25;}
+.tl-item .meta{display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; margin:3px 0 4px;}
+.tl-item .co{font-family:var(--font-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);}
+.tl-item .d{font-family:var(--font-mono); font-size:10px; letter-spacing:.03em; color:var(--accent); white-space:nowrap;}
+.tl-item .desc{font-family:var(--font-mono); font-size:11.5px; line-height:1.5; color:var(--ink-soft);}
+
+/* details */
+.det{display:flex; flex-direction:column; gap:9px;}
+.det-row{display:flex; gap:10px; font-family:var(--font-mono); font-size:12px; align-items:baseline;}
+.det-row .k{color:var(--muted); width:66px; flex:none; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; padding-top:1px;}
+.det-row .v{color:var(--ink); font-weight:500; overflow-wrap:anywhere; min-width:0;}
+.det-row .v a:hover{color:var(--accent);}
+
+/* language bars */
+.langs{display:flex; flex-direction:column; gap:11px;}
+.lang-row{display:flex; flex-direction:column; gap:6px;}
+.lang-top{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+.lang-top .l{font-family:var(--font-mono); font-size:11px; letter-spacing:.02em; color:var(--ink); font-weight:500;}
+.lang-top .lv{font-family:var(--font-mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);}
+
+/* generic bar */
+.bar{position:relative; height:8px; background:var(--accent-soft); overflow:hidden;}
+.bar i{display:block; height:100%; width:0; background:var(--accent); position:relative; overflow:hidden;}
+.bar i::before{content:""; position:absolute; top:0; bottom:0; width:40px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
+  animation:shimmer 2.4s ease-in-out infinite;}
+@keyframes shimmer{0%{left:-50px;}60%,100%{left:120%;}}
+.bar::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:repeating-linear-gradient(90deg, transparent 0 6px, var(--card) 6px 7.5px);}
+
+/* skills */
+.skills-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 26px;}
+.skill-grp{display:flex; flex-direction:column; gap:7px;}
+.skill-top{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+.skill-top .gl{font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink);}
+.skill-top .pct{font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; color:var(--accent);}
+.chips{display:flex; gap:5px; flex-wrap:wrap; margin-top:1px;}
+.chip{font-family:var(--font-mono); font-size:10px; letter-spacing:.03em; color:var(--ink-soft);}
+.chip::before{content:"· ";color:var(--muted);}
+.chip:first-child::before{content:"";}
+.tool-row .gl{display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink); margin-bottom:5px;}
+.skills-list{display:flex; flex-direction:column;}
+.sk-row{display:grid; grid-template-columns:88px minmax(0,1fr); gap:12px; align-items:baseline; padding:9px 0; border-top:1px solid var(--line);}
+.sk-row:first-child{border-top:1px solid var(--line-2);}
+.sk-row .gl{font-family:var(--font-mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); padding-top:2px;}
+.sk-row .sv{font-family:var(--font-mono); font-size:12px; line-height:1.55; color:var(--ink); overflow-wrap:anywhere;}
+
+/* CTA */
+.cta{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:3px;}
+.btn{font-family:var(--font-display); font-weight:700; font-size:13px; letter-spacing:.02em; border-radius:999px; padding:13px 18px; border:1.5px solid var(--ink); display:inline-flex; align-items:center; justify-content:center; gap:9px; cursor:pointer; transition:transform .15s ease, background .2s ease, color .2s ease;}
+.btn.accent{background:var(--accent); color:#fff; border-color:var(--accent);}
+.btn.accent .ar{transition:transform .2s ease;}
+.btn.accent:hover .ar{transform:translate(2px,-2px);}
+.btn.ghost:hover{background:var(--ink); color:var(--paper);}
+.btn:hover{transform:translateY(-1px);}
+
+/* footer */
+.foot{display:flex; justify-content:space-between; align-items:center; gap:12px; font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted);}
+.foot .live{display:inline-flex; align-items:center; gap:7px; color:var(--accent);}
+.foot .live .b{width:6px; height:6px; border-radius:50%; background:var(--accent); animation:blink 1.4s steps(1) infinite;}
+.foot a:hover{color:var(--accent);}
+
+/* highlight sweep */
+.hl{display:inline; padding:0 .12em; color:#fff;
+  background-image:linear-gradient(var(--accent),var(--accent)); background-repeat:no-repeat;
+  background-position:left center; background-size:100% 84%;
+  -webkit-box-decoration-break:clone; box-decoration-break:clone;}
+.hl.hl-arm{background-size:0% 84%; color:var(--ink);}
+.hl.hl-in{background-size:100% 84%; color:#fff; transition:background-size .5s cubic-bezier(.7,0,.2,1), color .12s ease .32s;}
+
+/* entrance reveal — never hides content (transform-only) */
+.reveal{opacity:1;}
+@media(prefers-reduced-motion: no-preference){
+  [data-anim="on"] .reveal.pre{transform:translateY(12px);}
+  [data-anim="on"] .reveal.pre.show{transform:none; transition:transform .55s cubic-bezier(.2,.7,.2,1);}
+}
+
+/* ===== responsive ===== */
+@media(max-width:880px){
+  body{padding:0; align-items:stretch;}
+  .card{grid-template-columns:1fr; width:100%; border:none; box-shadow:none;}
+  .card::before{inset:0; border:none;}
+  .photo{border-right:none; border-bottom:1.5px solid var(--line-2);}
+  .dotfield{display:none;}
+  .photo-sticky{position:relative; height:auto; min-height:340px; max-height:none; aspect-ratio:4/3;}
+  .content{padding:26px 22px 32px;}
+}
+@media(max-width:600px){
+  .band{grid-template-columns:1fr; gap:24px;}
+  .skills-grid{grid-template-columns:1fr;}
+  .top{flex-wrap:wrap;}
+  .stats .stat{min-width:0;}
+  .photo-sticky{aspect-ratio:1/1;}
+}
+@media(max-width:420px){
+  .cta{grid-template-columns:1fr;}
+  .det-row{flex-wrap:wrap; gap:2px;}
+  .det-row .k{width:auto;}
+  .lang-seg{top:12px; right:12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- fixed language toggle -->
+<div class="lang-seg" id="langFab" data-lang="it" role="button" tabindex="0" aria-label="IT / EN">
+  <span class="lf-it">IT</span><span class="lf-sep">/</span><span class="lf-en">EN</span>
+</div>
+
+<main class="card" data-stage="hero">
+  <!-- PHOTO -->
+  <div class="photo">
+    <div class="photo-sticky">
+      <img class="portrait" src="Luca.jpg" alt="Luca Del Conte — Computer Scientist" />
+      <div class="frame"></div>
+      <div class="pcorner tl">FIG.01 · DLC—<span class="yr2">26</span></div>
+      <div class="pv"><span>COMPUTER SCIENTIST</span></div>
+    </div>
+    <div class="dotfield" aria-hidden="true"></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="top reveal">
+      <div class="idblock">
+        <div class="mono-mark" id="monoGraph" role="img" aria-label="Knowledge graph"></div>
+        <div>
+          <h1 class="name">Luca Del Conte</h1>
+          <div class="role"><span class="pdot"></span><span class="role-name"><span data-k="role_lab">Informatico</span><span class="caret"></span></span></div>
+          <div class="role-contact">
+            <a href="https://github.com/LucaDLC" target="_blank" rel="noopener"><b>↳</b> github.com/LucaDLC</a>
+            <a href="mailto:workspace.delconteluca@gmail.com"><b>✉</b> workspace.delconteluca@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule reveal"></div>
+
+    <div class="reveal">
+      <div class="lab"><span class="n">01</span><span data-k="lab_profilo">Profilo</span><span class="ln"></span></div>
+      <p class="bio" data-k="bio"><b>AI · Data Science · Cybersecurity.</b> Dalla tesi triennale — un modello di Machine Learning supervisionato per il rilevamento di anomalie aziendali — alle infrastrutture e alla sicurezza. Costruisco soluzioni <span class="hl" data-sweep>innovative ad alto impatto</span>, simpatizzante dei settori Healthcare &amp; Fitness.</p>
+    </div>
+
+    <p class="quote reveal" data-k="quote">"Che si tratti di un fallimento o di un successo, imparerai sempre qualcosa che ti aiuterà a <span class="pt">salire di livello.</span>"</p>
+
+    <div class="stats reveal">
+      <div class="stat"><div class="v"><span data-count="6" data-pad="2">06</span></div><div class="k" data-k="st_exp">Esperienze</div></div>
+      <div class="stat"><div class="v"><span data-count="5" data-suffix="+">5+</span></div><div class="k" data-k="st_yrs">Anni · dal 2020</div></div>
+      <div class="stat"><div class="v"><span data-count="20" data-suffix="+">20+</span></div><div class="k" data-k="st_tools">Tecnologie</div></div>
+      <div class="stat"><div class="v">B2<span style="font-size:15px;">/C1</span></div><div class="k" data-k="st_en">Inglese · IELTS</div></div>
+    </div>
+
+    <div class="band">
+      <!-- LEFT: education + experience -->
+      <div class="col">
+        <div class="edu reveal">
+          <div class="lab"><span class="n">02</span><span data-k="lab_edu">Formazione</span><span class="ln"></span></div>
+          <div class="tl-list">
+            <div class="tl-item now">
+              <span class="dot"></span>
+              <div class="r" data-k="e1">Laurea Triennale in Informatica</div>
+              <div class="meta"><span class="co">UniTo</span><span class="d">2020 — 2025</span></div>
+              <div class="desc" data-k="ed1">Tesi: modello di apprendimento supervisionato per anomalie aziendali.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="e2">Perito Informatico</div>
+              <div class="meta"><span class="co">I.T.I.S. A. Artom</span><span class="d">2015 — 2020</span></div>
+              <div class="desc" data-k="ed2">Diploma in Informatica e Telecomunicazioni.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="exp reveal">
+          <div class="lab"><span class="n">03</span><span data-k="lab_exp">Esperienza</span><span class="ln"></span></div>
+          <div class="tl-list">
+            <div class="tl-item now">
+              <span class="dot"></span>
+              <div class="r" data-k="r0">Consulente DevOps</div>
+              <div class="meta"><span class="co">VLC2</span><span class="d" data-k="rd0d">03/2026 — Attuale</span></div>
+              <div class="desc" data-k="rd0">Gestione dell'infrastruttura Cloud dei clienti.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="r1">Data Analyst &amp; Sviluppatore AI</div>
+              <div class="meta"><span class="co">UniTo</span><span class="d">10/2024 — 08/2025</span></div>
+              <div class="desc" data-k="rd1">Modello ML supervisionato custom + analisi statistica sui processi aziendali.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="r2">Consulente IT</div>
+              <div class="meta"><span class="co">OpiCons S.R.L.</span><span class="d">12/2022 — 08/2023</span></div>
+              <div class="desc" data-k="rd2">HW/SW, Cybersecurity, infrastruttura di rete e gestione clienti.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="r3">Specialista IT Esterno</div>
+              <div class="meta"><span class="co">CaredioGroup S.R.L.</span><span class="d">01/2022 — 08/2023</span></div>
+              <div class="desc" data-k="rd3">HW/SW, Cybersecurity e gestione dell'infrastruttura di rete.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="r4">Tecnico IT</div>
+              <div class="meta"><span class="co">Dedalus Piemonte</span><span class="d">06/2021 — 12/2022</span></div>
+              <div class="desc" data-k="rd4">HW/SW e Cybersecurity di reti sanitarie e ospedaliere pubbliche.</div>
+            </div>
+            <div class="tl-item">
+              <span class="dot"></span>
+              <div class="r" data-k="r5">Social Media Manager</div>
+              <div class="meta"><span class="co">Perrone Informatica</span><span class="d">04/2020 — 05/2021</span></div>
+              <div class="desc" data-k="rd5">Studio e creazione siti, design e grafica, gestione social e analisi brand e reputazione online.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: details + languages + skills -->
+      <div class="col">
+        <div class="det reveal">
+          <div class="lab"><span class="n">04</span><span data-k="lab_det">Dettagli</span><span class="ln"></span></div>
+          <div class="det-row"><div class="k" data-k="d_sede">Sede</div><div class="v" data-k="v_sede">Asti, Italia</div></div>
+          <div class="det-row"><div class="k">Email</div><div class="v"><a href="mailto:workspace.delconteluca@gmail.com">workspace.delconteluca@gmail.com</a></div></div>
+          <div class="det-row"><div class="k">GitHub</div><div class="v"><a href="https://github.com/LucaDLC" target="_blank" rel="noopener">github.com/LucaDLC ↗</a></div></div>
+          <div class="det-row"><div class="k" data-k="d_lic">Patenti</div><div class="v" data-k="v_lic">Auto B · Moto A2 (UE)</div></div>
+        </div>
+
+        <div class="langs reveal">
+          <div class="lab"><span class="n">05</span><span data-k="lab_lang">Lingue</span><span class="ln"></span></div>
+          <div class="lang-row">
+            <div class="lang-top"><span class="l" data-k="l_it">Italiano</span><span class="lv" data-k="lv_it">Madrelingua</span></div>
+            <div class="bar"><i data-bar="100"></i></div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-top"><span class="l" data-k="l_en">Inglese</span><span class="lv">IELTS 6.5 · B2/C1</span></div>
+            <div class="bar"><i data-bar="75"></i></div>
+          </div>
+        </div>
+
+        <div class="skills reveal">
+          <div class="lab"><span class="n">06</span><span data-k="lab_skill">Competenze</span><span class="ln"></span></div>
+          <div class="skills-list">
+            <div class="sk-row"><span class="gl">AI &amp; Data</span><span class="sv">Python · RStudio · SQL</span></div>
+            <div class="sk-row"><span class="gl" data-k="g_dev">Sviluppo</span><span class="sv">C++ · Java · C · React · TS · JS · Lua</span></div>
+            <div class="sk-row"><span class="gl" data-k="g_os">Sistemi</span><span class="sv">Windows · Linux · Mac · iOS · Android</span></div>
+            <div class="sk-row"><span class="gl">Web</span><span class="sv">WordPress · Elementor</span></div>
+            <div class="sk-row"><span class="gl" data-k="g_design">Design</span><span class="sv">Photoshop · Sony Vegas · Spark AR</span></div>
+            <div class="sk-row"><span class="gl">Office</span><span class="sv">LaTeX · Microsoft Office</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta reveal">
+      <a class="btn accent" href="mailto:workspace.delconteluca@gmail.com" data-k="cta_mail">Contattami <span class="ar">↗</span></a>
+      <a class="btn ghost" href="Curriculum.pdf" download="Curriculum_Luca_Del_Conte.pdf" data-k="cta_cv">Scarica il CV ↓</a>
+    </div>
+
+    <div class="foot reveal">
+      <div>© <span id="yr">2026</span> LUCA DEL CONTE · <span style="color:var(--accent);">VOL.01 / Nº<span class="yr2">26</span></span></div>
+      <div class="live"><span class="b"></span><span data-k="live">Disponibile</span></div>
+    </div>
+  </div>
+</main>
+
+<script src="dotfield.js"></script>
+<script src="nodesphere.js"></script>
+<script src="app.js"></script>
+<script src="i18n.js"></script>
+</body>
+</html>
