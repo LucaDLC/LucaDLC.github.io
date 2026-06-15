@@ -51,7 +51,8 @@
     if (W < 8 || H < 8) return false;
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = W * dpr; canvas.height = H * dpr;
-    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    // canvas is position:absolute / inset:0 in CSS — do NOT set style px size here
+    // (it would feed back into the ResizeObserver and grow the container).
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     var nc = Math.floor(W / CELL), nr = Math.floor(H / CELL);
     if (nc !== cols || nr !== rows || !cur) {
@@ -143,7 +144,12 @@
     }
   }
 
+  var roW = 0, roH = 0;
   var ro = new ResizeObserver(function () {
+    var r = host.getBoundingClientRect();
+    var w = Math.floor(r.width), h = Math.floor(r.height);
+    if (w === roW && h === roH) return;   // ignore non-size notifications / self-echo
+    roW = w; roH = h;
     if (resize() && !raf && animOn()) raf = requestAnimationFrame(tick);
     else if (!animOn()) render();
   });
