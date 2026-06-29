@@ -28,7 +28,7 @@
     rd2: 'HW/SW, Cybersecurity, network infrastructure and clients management.',
     rd3: 'HW/SW, Cybersecurity and network infrastructure management.',
     rd4: 'HW/SW and Cybersecurity for public healthcare & hospital networks.',
-    rd5: 'Website study & build, design & graphics, social management and brand & online reputation analysis.',
+    rd5: 'Website study & build, design & graphics, social management, brand & online reputation analysis.',
 
     lab_edu: 'Education',
     e1: 'B.Sc. in Computer Science',
