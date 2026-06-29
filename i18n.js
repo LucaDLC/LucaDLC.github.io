@@ -18,7 +18,7 @@
     lab_exp: 'Experience',
     r0: 'DevOps Consultant',
     rd0: 'Cloud infrastructure management for clients.',
-    rd0d: '03/2026 — Present',
+    rd0d: '03/2026 — 07/2026',
     r1: 'Data Analyst &amp; AI Developer',
     r2: 'IT Consultant',
     r3: 'External IT Specialist',
