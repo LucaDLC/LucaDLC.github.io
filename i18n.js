@@ -24,10 +24,10 @@
     r3: 'External IT Specialist',
     r4: 'IT Technician',
     r5: 'Social Media Manager',
-    rd1: 'Custom supervised ML model + statistical analysis of business processes.',
+    rd1: 'Custom ML model training + statistical analysis of business processes.',
     rd2: 'HW/SW, Cybersecurity, network infrastructure and clients management.',
     rd3: 'HW/SW, Cybersecurity and network infrastructure management.',
-    rd4: 'HW/SW and Cybersecurity for public healthcare & hospital networks.',
+    rd4: 'HW/SW + infrastructure management and Cybersecurity for public healthcare & hospital networks.',
     rd5: 'Website study & build, design & graphics, social management, brand & online reputation analysis.',
 
     lab_edu: 'Education',
