@@ -32,9 +32,10 @@
 
     lab_edu: 'Education',
     e1: 'B.Sc. in Computer Science',
-    e2: 'IT Expert Diploma',
-    ed1: 'Thesis: supervised learning model for business anomaly detection.',
-    ed2: 'Diploma in Computer Science & Telecommunications.',
+    e2: 'Diploma in Computer Science & Telecommunications',
+    ed1: 'Thesis: Training of a supervised learning model to identify anomalies in business processes, with analysis and understanding of the anomalies to mitigate them and optimize existing business processes, so as to increase their efficiency.',
+    ed1b: 'Paket Project: a project in collaboration with the Asti branch of the Italian Red Cross, aimed at creating a food-parcel management system designed to reduce any kind of waste, standardize the distributed quantities, and simplify the work of operators during distribution and of administrators in handling the paperwork.',
+    ed2: 'Final research project: Use of wearable and portable devices for quality-of-life improvement through Personal Area Networks, with a focus on healthcare applications (ECG, health monitoring).',
 
     lab_det: 'Details',
     d_sede: 'Location',
@@ -51,6 +52,8 @@
     g_dev: 'Development',
     g_os: 'Systems',
     g_design: 'Design',
+    g_net: 'Networking',
+    g_net_v: 'ISO/OSI stack · Protocols · Network devices · Cisco Packet Tracer · Fortinet',
 
     cta_mail: 'Get in touch <span class="ar">↗</span>',
     cta_cv: 'Download CV ↓',
