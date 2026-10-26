@@ -25,18 +25,19 @@
   var raf = 0, last = 0, acc = 0;
   var hover = -1, col = null;
 
-  /* The photo's ring answering the board (phone layout only; data-ring is 'A' or 'D', picked per load).
-     A: the photo is an obstacle; what hits it lights an arc of the ring.
-     D: when the ring flashes, a wave of births spreads from it. */
-  var RING = document.documentElement.getAttribute('data-ring') || '';
+  /* The photo's ring and the board answer each other (phone layout only).
+     Normally the photo is an obstacle: what hits it lights an arc of the ring.
+     Now and then (every 20-45 s) the whole ring flashes and a wave of births spreads from it. */
   var photoEl = document.querySelector('.photo');
-  var RING_W = 6;                       // the ring's thickness, as in the CSS outline
+  var RING_W = 6;                       // the ring's thickness
   var RING_LIFE = 2400;                 // an arc: orange 0.4 s, white until 0.9 s, then a short 1.5 s fade to the dark
-  var WAVE_DELAY = 500, WAVE_MS = 1700, WAVE_REACH = 90, WAVE_P = 0.45;   // D: starts when the ring is orange; a thin shell, 90px out
-  var AIM_EVERY = 45;                   // A: a glider aimed at the photo every ~7 s (else impacts are rare)
+  var FLASH_LIFE = 7500;                // the rare full-ring flash: orange in 0.5 s, white by 1.5 s, then a slow fade
+  var FLASH_FIRST = [15000, 30000], FLASH_GAP = [20000, 45000];   // ms until the first flash / between flashes
+  var WAVE_DELAY = 500, WAVE_MS = 1700, WAVE_REACH = 90, WAVE_P = 0.45;   // the wave starts when the ring is orange; a thin shell, 90px out
+  var AIM_EVERY = 45;                   // a glider aimed at the photo every ~7 s (else impacts are rare)
   var geo = null, zone = null, dist = null;     // photo circle (canvas px), cells under it, cell distances
   var hits = [], hitAcc = new Float32Array(12), hitX = new Float32Array(12), hitY = new Float32Array(12);
-  var lastHit = 0, sinceAim = 0, wave = null;
+  var lastHit = 0, sinceAim = 0, wave = null, flash = null, specialTimer = 0;
   var GLIDERS = [   // heading (dx, dy) and the pattern that walks that way
     [ 1,  1, ["010","001","111"]], [-1,  1, ["010","100","111"]],
     [ 1, -1, ["111","001","010"]], [-1, -1, ["111","100","010"]]
@@ -82,7 +83,7 @@
   /* ---------- the photo circle, in board coordinates ---------- */
   function geometry() {
     geo = null; zone = null; dist = null;
-    if (!RING || !photoEl || !window.matchMedia('(max-width: 900px)').matches) return;
+    if (!photoEl || !window.matchMedia('(max-width: 900px)').matches) return;
     var pr = photoEl.getBoundingClientRect(), hr = host.getBoundingClientRect();
     if (pr.width < 8) return;
     geo = { x: pr.left + pr.width / 2 - hr.left, y: pr.top + pr.height / 2 - hr.top, r: pr.width / 2 };
@@ -134,7 +135,7 @@
   /* ---------- variant A: the photo is an obstacle ---------- */
   // empties the cells under the photo; with report, counts what was lost per 30° of the ring
   function clearZone(a, report) {
-    if (RING !== 'A' || !zone) return;
+    if (!zone) return;
     for (var k = 0; k < zone.length; k++) {
       var i = zone[k];
       if (!a[i]) continue;
@@ -207,14 +208,18 @@
       }
     }
     var now = performance.now();
-    if (RING === 'D') applyWave(nxt, now);
-    if (RING === 'A' && geo) { clearZone(nxt, true); detectImpacts(now); }
+    applyWave(nxt, now);
+    if (geo) {
+      var flashOn = flash && now - flash.t0 < FLASH_LIFE;   // while the whole ring is lit, impacts add nothing
+      clearZone(nxt, !flashOn);
+      if (!flashOn) detectImpacts(now);
+    }
     for (var k = 0; k < nxt.length; k++) age[k] = nxt[k] ? (cur[k] ? Math.min(age[k] + 1, 999) : 0) : 0;
     prev = cur; cur = nxt;
 
     if (population() < cols * rows * 0.04) { soup(0.06); stamp(); sinceStamp = 0; clearZone(cur, false); }
     else if (++sinceStamp >= 20) { stamp(); sinceStamp = 0; clearZone(cur, false); }
-    if (RING === 'A' && geo && ++sinceAim >= AIM_EVERY) { aimedGlider(); sinceAim = 0; }
+    if (geo && ++sinceAim >= AIM_EVERY) { aimedGlider(); sinceAim = 0; }
   }
 
   function population() { var p = 0; for (var i = 0; i < cur.length; i++) p += cur[i]; return p; }
@@ -257,15 +262,32 @@
     var t = Math.min(1, (a - 0.9) / (RING_LIFE / 1000 - 0.9)); t = t * t * (3 - 2 * t);
     return mix('#ffffff', col.panel, t);
   }
+  function flashColour(a) {
+    if (a < 0.5) return mix(col.panel, col.accent, a / 0.5);
+    if (a < 1.0) return col.accent;
+    if (a < 1.5) return mix(col.accent, '#ffffff', (a - 1.0) / 0.5);
+    var t = Math.min(1, (a - 1.5) / (FLASH_LIFE / 1000 - 1.5));
+    return mix('#ffffff', col.panel, 1 - (1 - t) * (1 - t));
+  }
   function drawRing(now) {
-    if (RING !== 'A' || !geo) return;
+    if (!geo) return;
     var rm = geo.r + RING_W / 2, HALF = 0.45, N = 32;
     ctx.save();
     ctx.lineWidth = RING_W; ctx.globalAlpha = 1; ctx.lineCap = 'butt';
     ctx.strokeStyle = col.panel;
-    ctx.beginPath(); ctx.arc(geo.x, geo.y, rm, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(geo.x, geo.y, rm, 0, Math.PI * 2); ctx.stroke();      // the dark ring itself
+    var arcsOn = 1;                                                                // how much of the old arcs still shows
+    if (flash) {                                                                   // the rare full-ring flash
+      var fa = (now - flash.t0) / 1000;
+      if (fa >= FLASH_LIFE / 1000) flash = null;
+      else {
+        ctx.strokeStyle = flashColour(fa); ctx.beginPath(); ctx.arc(geo.x, geo.y, rm, 0, Math.PI * 2); ctx.stroke();
+        arcsOn = Math.max(0, 1 - fa / 0.5);   // the flash takes over: arcs lit before it melt into it in 0.5 s, then it rules alone
+      }
+    }
     hits = hits.filter(function (h) { return now - h.t0 < RING_LIFE; });
-    for (var k = 0; k < hits.length; k++) {
+    ctx.globalAlpha = arcsOn;
+    for (var k = 0; k < (arcsOn > 0 ? hits.length : 0); k++) {
       var h = hits[k], c = ringColour((now - h.t0) / 1000);
       for (var s = 0; s < N; s++) {                       // brightest at the impact, soft at the ends
         var u0 = -HALF + 2 * HALF * s / N, u1 = -HALF + 2 * HALF * (s + 1) / N;
@@ -276,10 +298,22 @@
     ctx.restore();
   }
 
-  // variant D: the ring flash (app.js) starts the wave
-  window.addEventListener('ldc:ringflash', function () {
-    if (RING === 'D' && geo) wave = { t0: performance.now() + WAVE_DELAY, r: geo.r + RING_W };
-  });
+  // the rare event: the whole ring flashes and a wave of births leaves it
+  function special() {
+    if (!geo || !running()) return false;
+    var now = performance.now();
+    flash = { t0: now };
+    wave = { t0: now + WAVE_DELAY, r: geo.r + RING_W };
+    return true;
+  }
+  function scheduleSpecial(range) {
+    clearTimeout(specialTimer);
+    specialTimer = setTimeout(function () {
+      if (special()) scheduleSpecial(FLASH_GAP);
+      else scheduleSpecial([3000, 6000]);      // not now (desktop layout, hidden, paused): try again soon
+    }, range[0] + Math.random() * (range[1] - range[0]));
+  }
+  window.addEventListener('ldc:ringspecial', special);   // also lets you fire it by hand
 
   function tick(now) {
     raf = 0;
@@ -355,6 +389,7 @@
     if (!resize()) return;
     if (reduced()) playing = false;
     render(1); wake();
+    scheduleSpecial(FLASH_FIRST);
   }
 
   var roW = 0, roH = 0;
