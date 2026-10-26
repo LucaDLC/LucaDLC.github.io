@@ -1,0 +1,12 @@
+# Claude Code: project skills, agents, local settings, preview config
+.claude/
+skills-lock.json
+
+# Design tools' working files and screenshots
+.taste-skill/
+.impeccable/
+
+# OS clutter
+.DS_Store
+Thumbs.db
+desktop.ini
