@@ -6,7 +6,7 @@
 <title>Luca Del Conte — Computer Scientist</title>
 
 <!-- Favicon: the spherical graph with its dashed ring, on the off-white tile -->
-<link rel="icon" href="favicon.svg?v=3" type="image/svg+xml" />
+<link rel="icon" href="favicon.svg?v=45" type="image/svg+xml" />
 <meta name="theme-color" content="#f2efe9" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)" />
 
@@ -30,6 +30,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Doto:ROND,wght@0..100,100..900&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+<script>
+  /* How the photo's ring and the Life board answer each other (phone layout), picked at random on every load:
+     A = the board lights arcs of the ring, D = the ring's flash launches a wave of births in the board.
+     ?ring=A or ?ring=D forces one. */
+  (function () {
+    var f = new URLSearchParams(location.search).get('ring');
+    document.documentElement.setAttribute('data-ring', f === 'A' || f === 'D' ? f : (Math.random() < 0.5 ? 'A' : 'D'));
+  })();
+</script>
 <style>
 :root{
   --paper:#f2efe9; --panel:#e8e4dc; --tone:rgba(21,20,18,.06); --tone-2:rgba(21,20,18,.11);
@@ -228,6 +237,7 @@ a{color:inherit; text-decoration:none;}
   .dotfield{flex:none; height:320px;}
   .photo{position:absolute; z-index:2; left:50%; top:50%; width:230px; height:230px; transform:translate(-50%,-50%);
     border-radius:50%; outline:6px solid var(--panel);}
+  html[data-ring="A"] .photo{outline:none;}   /* variant A: the ring is drawn by the board (dotfield.js) */
   /* now and then (app.js adds .flash) the ring lights orange, turns white, then fades back very slowly */
   @media (prefers-reduced-motion: no-preference){
     .photo.flash{animation:ring-flash 7.5s both;}
@@ -446,9 +456,9 @@ a{color:inherit; text-decoration:none;}
   </main>
 </div>
 
-<script src="dotfield.js?v=38"></script>
-<script src="nodesphere.js?v=38"></script>
-<script src="app.js?v=38"></script>
-<script src="i18n.js?v=38"></script>
+<script src="dotfield.js?v=45"></script>
+<script src="nodesphere.js?v=45"></script>
+<script src="app.js?v=45"></script>
+<script src="i18n.js?v=45"></script>
 </body>
 </html>

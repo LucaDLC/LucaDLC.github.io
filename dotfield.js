@@ -25,6 +25,23 @@
   var raf = 0, last = 0, acc = 0;
   var hover = -1, col = null;
 
+  /* The photo's ring answering the board (phone layout only; data-ring is 'A' or 'D', picked per load).
+     A: the photo is an obstacle; what hits it lights an arc of the ring.
+     D: when the ring flashes, a wave of births spreads from it. */
+  var RING = document.documentElement.getAttribute('data-ring') || '';
+  var photoEl = document.querySelector('.photo');
+  var RING_W = 6;                       // the ring's thickness, as in the CSS outline
+  var RING_LIFE = 2400;                 // an arc: orange 0.4 s, white until 0.9 s, then a short 1.5 s fade to the dark
+  var WAVE_DELAY = 500, WAVE_MS = 1700, WAVE_REACH = 90, WAVE_P = 0.45;   // D: starts when the ring is orange; a thin shell, 90px out
+  var AIM_EVERY = 45;                   // A: a glider aimed at the photo every ~7 s (else impacts are rare)
+  var geo = null, zone = null, dist = null;     // photo circle (canvas px), cells under it, cell distances
+  var hits = [], hitAcc = new Float32Array(12), hitX = new Float32Array(12), hitY = new Float32Array(12);
+  var lastHit = 0, sinceAim = 0, wave = null;
+  var GLIDERS = [   // heading (dx, dy) and the pattern that walks that way
+    [ 1,  1, ["010","001","111"]], [-1,  1, ["010","100","111"]],
+    [ 1, -1, ["111","001","010"]], [-1, -1, ["111","100","010"]]
+  ];
+
   var GLYPHS = [
     ["00100000100","00010001000","00111111100","01101110110","11111111111","10111111101","10100000101","00011011000"], // invader
     ["01100110","11111111","11111111","11111111","01111110","00111100","00011000"], // heart
@@ -40,7 +57,8 @@
   function readColors() {
     var cs = getComputedStyle(document.documentElement);
     col = { ink: cs.getPropertyValue('--ink').trim() || '#151412',
-            accent: cs.getPropertyValue('--accent').trim() || '#e0461b' };
+            accent: cs.getPropertyValue('--accent').trim() || '#e0461b',
+            panel: cs.getPropertyValue('--panel').trim() || '#1b1a18' };
   }
   readColors();   // the ResizeObserver can fire before start()
 
@@ -56,8 +74,38 @@
     var nc = Math.ceil((W + GAP) / CELL) + 1, nr = Math.ceil((H + GAP) / CELL) + 1;
     ox = Math.floor((W - (nc * CELL - GAP)) / 2);
     oy = Math.floor((H - (nr * CELL - GAP)) / 2);
-    if (nc !== cols || nr !== rows || !cur) { cols = nc; rows = nr; seed(); }
+    if (nc !== cols || nr !== rows || !cur) { cols = nc; rows = nr; geometry(); seed(); }
+    else geometry();
     return true;
+  }
+
+  /* ---------- the photo circle, in board coordinates ---------- */
+  function geometry() {
+    geo = null; zone = null; dist = null;
+    if (!RING || !photoEl || !window.matchMedia('(max-width: 900px)').matches) return;
+    var pr = photoEl.getBoundingClientRect(), hr = host.getBoundingClientRect();
+    if (pr.width < 8) return;
+    geo = { x: pr.left + pr.width / 2 - hr.left, y: pr.top + pr.height / 2 - hr.top, r: pr.width / 2 };
+    dist = new Float32Array(cols * rows); zone = [];
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+      var x = ox + c * CELL + (CELL - GAP) / 2 - geo.x, y = oy + r * CELL + (CELL - GAP) / 2 - geo.y;
+      var d = Math.sqrt(x * x + y * y);
+      dist[r * cols + c] = d;
+      if (d <= geo.r + RING_W + CELL * 0.4) zone.push(r * cols + c);   // under the photo and its ring
+    }
+  }
+
+  function hexRGB(c) {
+    c = c.trim();
+    if (c.charAt(0) === '#') {
+      if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+      var n = parseInt(c.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    var m = c.match(/\d+/g) || [0, 0, 0]; return [+m[0], +m[1], +m[2]];
+  }
+  function mix(a, b, t) {
+    var A = hexRGB(a), B = hexRGB(b);
+    return 'rgb(' + Math.round(A[0] + (B[0] - A[0]) * t) + ',' + Math.round(A[1] + (B[1] - A[1]) * t) + ',' + Math.round(A[2] + (B[2] - A[2]) * t) + ')';
   }
 
   function clear() {
@@ -80,6 +128,59 @@
     clear();
     soup(0.12); stamp(); stamp();
     sinceStamp = 0;
+    clearZone(cur, false);
+  }
+
+  /* ---------- variant A: the photo is an obstacle ---------- */
+  // empties the cells under the photo; with report, counts what was lost per 30° of the ring
+  function clearZone(a, report) {
+    if (RING !== 'A' || !zone) return;
+    for (var k = 0; k < zone.length; k++) {
+      var i = zone[k];
+      if (!a[i]) continue;
+      a[i] = 0;
+      if (report) {
+        var c = i % cols, r = (i / cols) | 0;
+        var ang = Math.atan2(oy + r * CELL + (CELL - GAP) / 2 - geo.y, ox + c * CELL + (CELL - GAP) / 2 - geo.x);
+        var w = (Math.round((ang + Math.PI) / (Math.PI * 2) * 12) % 12 + 12) % 12;
+        hitAcc[w] += 1; hitX[w] += Math.cos(ang); hitY[w] += Math.sin(ang);
+      }
+    }
+  }
+  // a group that reaches the photo lights one arc; calm by construction: few at a time, never close together
+  function detectImpacts(now) {
+    hits = hits.filter(function (h) { return now - h.t0 < RING_LIFE; });
+    for (var w = 0; w < 12; w++) {
+      if (hitAcc[w] >= 2.6 && now - lastHit > 700 && hits.length < 5) {
+        var a = Math.atan2(hitY[w], hitX[w]), near = false;
+        for (var k = 0; k < hits.length; k++) {
+          var d = Math.abs(Math.atan2(Math.sin(a - hits[k].a), Math.cos(a - hits[k].a)));
+          if (d < 0.9 && now - hits[k].t0 < 2500) near = true;
+        }
+        if (!near) { hits.push({ a: a, t0: now }); lastHit = now; hitAcc[w] = hitX[w] = hitY[w] = 0; }
+      }
+      hitAcc[w] *= 0.82; hitX[w] *= 0.82; hitY[w] *= 0.82;
+    }
+  }
+  function aimedGlider() {
+    if (!geo) return;
+    var g = GLIDERS[(Math.random() * 4) | 0];
+    var k = Math.ceil((geo.r + RING_W + 46) / (CELL * Math.SQRT2));
+    var c0 = Math.round((geo.x - ox) / CELL) - g[0] * k - 1, r0 = Math.round((geo.y - oy) / CELL) - g[1] * k - 1;
+    put(g[2], c0, r0, 1);
+  }
+
+  /* ---------- variant D: a wave of births from the ring ---------- */
+  function applyWave(nxt, now) {
+    if (!wave || !geo || now < wave.t0) return;
+    var rMax = geo.r + RING_W + WAVE_REACH;
+    var rNow = geo.r + RING_W + Math.min(1, (now - wave.t0) / WAVE_MS) * WAVE_REACH;
+    for (var i = 0; i < dist.length; i++) {
+      var d = dist[i];
+      if (d > wave.r - 2 && d <= rNow && Math.random() < WAVE_P) nxt[i] = 1;
+    }
+    wave.r = rNow;
+    if (rNow >= rMax) wave = null;
   }
 
   function soup(d) {
@@ -105,11 +206,15 @@
         nxt[i] = (cur[i] ? (n === 2 || n === 3) : n === 3) ? 1 : 0;
       }
     }
+    var now = performance.now();
+    if (RING === 'D') applyWave(nxt, now);
+    if (RING === 'A' && geo) { clearZone(nxt, true); detectImpacts(now); }
     for (var k = 0; k < nxt.length; k++) age[k] = nxt[k] ? (cur[k] ? Math.min(age[k] + 1, 999) : 0) : 0;
     prev = cur; cur = nxt;
 
-    if (population() < cols * rows * 0.04) { soup(0.06); stamp(); sinceStamp = 0; }
-    else if (++sinceStamp >= 20) { stamp(); sinceStamp = 0; }
+    if (population() < cols * rows * 0.04) { soup(0.06); stamp(); sinceStamp = 0; clearZone(cur, false); }
+    else if (++sinceStamp >= 20) { stamp(); sinceStamp = 0; clearZone(cur, false); }
+    if (RING === 'A' && geo && ++sinceAim >= AIM_EVERY) { aimedGlider(); sinceAim = 0; }
   }
 
   function population() { var p = 0; for (var i = 0; i < cur.length; i++) p += cur[i]; return p; }
@@ -142,7 +247,39 @@
       ctx.fillRect(ox + (hover % cols) * CELL, oy + ((hover / cols) | 0) * CELL, s, s);
     }
     ctx.globalAlpha = 1;
+    drawRing(performance.now());
   }
+
+  // variant A: the ring itself is drawn here (dark, like the CSS outline), with the arcs the impacts light
+  function ringColour(a) {
+    if (a < 0.4) return mix(col.panel, col.accent, a / 0.4);
+    if (a < 0.9) return mix(col.accent, '#ffffff', (a - 0.4) / 0.5);
+    var t = Math.min(1, (a - 0.9) / (RING_LIFE / 1000 - 0.9)); t = t * t * (3 - 2 * t);
+    return mix('#ffffff', col.panel, t);
+  }
+  function drawRing(now) {
+    if (RING !== 'A' || !geo) return;
+    var rm = geo.r + RING_W / 2, HALF = 0.45, N = 32;
+    ctx.save();
+    ctx.lineWidth = RING_W; ctx.globalAlpha = 1; ctx.lineCap = 'butt';
+    ctx.strokeStyle = col.panel;
+    ctx.beginPath(); ctx.arc(geo.x, geo.y, rm, 0, Math.PI * 2); ctx.stroke();
+    hits = hits.filter(function (h) { return now - h.t0 < RING_LIFE; });
+    for (var k = 0; k < hits.length; k++) {
+      var h = hits[k], c = ringColour((now - h.t0) / 1000);
+      for (var s = 0; s < N; s++) {                       // brightest at the impact, soft at the ends
+        var u0 = -HALF + 2 * HALF * s / N, u1 = -HALF + 2 * HALF * (s + 1) / N;
+        ctx.strokeStyle = mix(col.panel, c, Math.cos((u0 + u1) / 2 / HALF * Math.PI / 2));
+        ctx.beginPath(); ctx.arc(geo.x, geo.y, rm, h.a + u0, h.a + u1 + 0.004); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // variant D: the ring flash (app.js) starts the wave
+  window.addEventListener('ldc:ringflash', function () {
+    if (RING === 'D' && geo) wave = { t0: performance.now() + WAVE_DELAY, r: geo.r + RING_W };
+  });
 
   function tick(now) {
     raf = 0;

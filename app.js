@@ -51,9 +51,16 @@
   // Phone layout: every 6-14 s the photo's ring flashes (the animation lives in the CSS)
   var photo = document.querySelector('.photo');
   var narrow = window.matchMedia('(max-width: 900px)'), calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var ringMode = document.documentElement.getAttribute('data-ring') || '';   // 'A' or 'D', picked per load (see index.html)
+  var flashTimer = 0;
+  function flashNow() {
+    photo.classList.remove('flash'); void photo.offsetWidth; photo.classList.add('flash');
+    window.dispatchEvent(new Event('ldc:ringflash'));   // the board listens (variant D)
+  }
   function nextFlash() {
-    setTimeout(function () {
-      if (narrow.matches && !calm.matches && !document.hidden) photo.classList.add('flash');
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function () {
+      if (narrow.matches && !calm.matches && !document.hidden) flashNow();
       else nextFlash();   // not now: try again later
     }, 6000 + Math.random() * 8000);
   }
@@ -61,6 +68,6 @@
     photo.addEventListener('animationend', function (e) {
       if (e.animationName === 'ring-flash') { photo.classList.remove('flash'); nextFlash(); }
     });
-    nextFlash();
+    if (ringMode !== 'A') nextFlash();   // in A the ring is lit by the board, not by a timer
   }
 })();
