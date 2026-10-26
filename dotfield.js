@@ -59,7 +59,8 @@
     var cs = getComputedStyle(document.documentElement);
     col = { ink: cs.getPropertyValue('--ink').trim() || '#151412',
             accent: cs.getPropertyValue('--accent').trim() || '#e0461b',
-            panel: cs.getPropertyValue('--panel').trim() || '#1b1a18' };
+            panel: cs.getPropertyValue('--panel').trim() || '#1b1a18',
+            hot: cs.getPropertyValue('--hot').trim() || '#ffffff' };
   }
   readColors();   // the ResizeObserver can fire before start()
 
@@ -258,16 +259,16 @@
   // variant A: the ring itself is drawn here (dark, like the CSS outline), with the arcs the impacts light
   function ringColour(a) {
     if (a < 0.4) return mix(col.panel, col.accent, a / 0.4);
-    if (a < 0.9) return mix(col.accent, '#ffffff', (a - 0.4) / 0.5);
+    if (a < 0.9) return mix(col.accent, col.hot, (a - 0.4) / 0.5);
     var t = Math.min(1, (a - 0.9) / (RING_LIFE / 1000 - 0.9)); t = t * t * (3 - 2 * t);
-    return mix('#ffffff', col.panel, t);
+    return mix(col.hot, col.panel, t);
   }
   function flashColour(a) {
     if (a < 0.5) return mix(col.panel, col.accent, a / 0.5);
     if (a < 1.0) return col.accent;
-    if (a < 1.5) return mix(col.accent, '#ffffff', (a - 1.0) / 0.5);
+    if (a < 1.5) return mix(col.accent, col.hot, (a - 1.0) / 0.5);
     var t = Math.min(1, (a - 1.5) / (FLASH_LIFE / 1000 - 1.5));
-    return mix('#ffffff', col.panel, 1 - (1 - t) * (1 - t));
+    return mix(col.hot, col.panel, 1 - (1 - t) * (1 - t));
   }
   function drawRing(now) {
     if (!geo) return;
@@ -324,11 +325,19 @@
       acc += dt;
       if (acc >= stepEvery) { acc = acc % stepEvery; step(); }
     }
+    if (now < themeUntil) readColors();   // a theme switch is animating the colours: follow it
     render(drawing ? 1 : acc / stepEvery);
     raf = requestAnimationFrame(tick);
   }
 
   function running() { return playing && visible && !document.hidden; }
+
+  // theme switch (app.js): the tokens animate for 1.2 s; read them every frame meanwhile, then settle
+  var themeUntil = 0;
+  window.addEventListener('ldc:theme', function () {
+    themeUntil = performance.now() + 1400;
+    setTimeout(function () { readColors(); render(1); }, 1450);
+  });
   function wake() { if (running() && !raf) { last = 0; raf = requestAnimationFrame(tick); } }
 
   /* ---------- easter egg: the label toggles drawing with mouse/pen ---------- */

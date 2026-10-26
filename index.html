@@ -6,9 +6,16 @@
 <title>Luca Del Conte — Computer Scientist</title>
 
 <!-- Favicon: the spherical graph with its dashed ring, on the off-white tile -->
-<link rel="icon" href="favicon.svg?v=47" type="image/svg+xml" />
-<meta name="theme-color" content="#f2efe9" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#131211" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="favicon.svg?v=48" type="image/svg+xml" />
+<meta name="theme-color" content="#131211" />
+<script>
+  /* Dark by default; holding the sphere switches to light and back (app.js). The choice is remembered. */
+  (function () {
+    var t = 'dark';
+    try { if (localStorage.getItem('ldc-theme') === 'light') t = 'light'; } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
 
 <!-- SEO -->
 <meta name="description" content="Luca Del Conte — Computer Scientist working across AI, Data Science & Cybersecurity, from machine-learning research to cloud infrastructure." />
@@ -31,30 +38,49 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Doto:ROND,wght@0..100,100..900&family=Schibsted+Grotesk:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
 <style>
+/* The colour tokens are registered so that a theme switch can animate them: everything that uses them
+   follows, the canvases too (they read the tokens while the switch runs). */
+@property --paper{syntax:'<color>'; inherits:true; initial-value:#f2efe9;}
+@property --panel{syntax:'<color>'; inherits:true; initial-value:#e8e4dc;}
+@property --tone{syntax:'<color>'; inherits:true; initial-value:transparent;}
+@property --tone-2{syntax:'<color>'; inherits:true; initial-value:transparent;}
+@property --ink{syntax:'<color>'; inherits:true; initial-value:#151412;}
+@property --ink-2{syntax:'<color>'; inherits:true; initial-value:#45413b;}
+@property --muted{syntax:'<color>'; inherits:true; initial-value:#635e56;}
+@property --accent{syntax:'<color>'; inherits:true; initial-value:#e0461b;}
+@property --accent-ink{syntax:'<color>'; inherits:true; initial-value:#b5360f;}
+@property --on-accent{syntax:'<color>'; inherits:true; initial-value:#fff;}
+@property --hot{syntax:'<color>'; inherits:true; initial-value:#151412;}
 :root{
   --paper:#f2efe9; --panel:#e8e4dc; --tone:rgba(21,20,18,.06); --tone-2:rgba(21,20,18,.11);
   --ink:#151412; --ink-2:#45413b; --muted:#635e56;
   --accent:#e0461b; --accent-ink:#b5360f; --on-accent:#fff;
+  --hot:#151412;   /* the "white-hot" step of the photo ring: white on dark, ink on light */
   --font-dot:'Doto',ui-monospace,monospace;
   --font-text:'Schibsted Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
   --gutter:clamp(20px,5vw,72px);
   --ease-out:cubic-bezier(.22,1,.36,1);
   color-scheme:light;
 }
+/* without JS there is no data-theme: follow the system */
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :root:not([data-theme]){
     --paper:#131211; --panel:#1b1a18; --tone:rgba(238,235,228,.06); --tone-2:rgba(238,235,228,.12);
     --ink:#eeebe4; --ink-2:#bdb8ae; --muted:#8a857c;
-    --accent:#ff6438; --accent-ink:#ff8a66; --on-accent:#1a0d08;
+    --accent:#ff6438; --accent-ink:#ff8a66; --on-accent:#1a0d08; --hot:#ffffff;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --paper:#131211; --panel:#1b1a18; --tone:rgba(238,235,228,.06); --tone-2:rgba(238,235,228,.12);
   --ink:#eeebe4; --ink-2:#bdb8ae; --muted:#8a857c;
-  --accent:#ff6438; --accent-ink:#ff8a66; --on-accent:#1a0d08;
+  --accent:#ff6438; --accent-ink:#ff8a66; --on-accent:#1a0d08; --hot:#ffffff;
   color-scheme:dark;
 }
+/* the switch itself: app.js adds .theme-anim for its duration */
+:root.theme-anim{transition:--paper 1.2s ease, --panel 1.2s ease, --tone 1.2s ease, --tone-2 1.2s ease,
+  --ink 1.2s ease, --ink-2 1.2s ease, --muted 1.2s ease, --accent 1.2s ease, --accent-ink 1.2s ease,
+  --on-accent 1.2s ease, --hot 1.2s ease;}
 
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -435,9 +461,9 @@ a{color:inherit; text-decoration:none;}
   </main>
 </div>
 
-<script src="dotfield.js?v=47"></script>
-<script src="nodesphere.js?v=47"></script>
-<script src="app.js?v=47"></script>
-<script src="i18n.js?v=47"></script>
+<script src="dotfield.js?v=48"></script>
+<script src="nodesphere.js?v=48"></script>
+<script src="app.js?v=48"></script>
+<script src="i18n.js?v=48"></script>
 </body>
 </html>

@@ -179,7 +179,7 @@
     var e = egg;
     if (e.state === 'holding') {
       e.p = Math.min(1, e.p + dt / HOLD); ringAlpha = 1;
-      if (e.p >= 1) { e.state = 'clearing'; e.t = t; }
+      if (e.p >= 1) { e.state = 'clearing'; e.t = t; window.dispatchEvent(new Event('ldc:themetoggle')); }   // and the theme flips (app.js)
     } else if (e.state === 'rewinding') {
       e.p = Math.max(0, e.p - dt / REWIND);
       if (e.p <= 0) e.state = 'idle';

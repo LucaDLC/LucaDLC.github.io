@@ -47,4 +47,22 @@
     window.addEventListener('resize', queueMark);
     markSection();
   }
+
+  // Theme: dark by default (index.html sets it before the first paint). Holding the sphere until its ring
+  // closes (nodesphere.js) flips it; the colours change during the reset (CSS animates the tokens).
+  var root = document.documentElement, themeMeta = document.querySelector('meta[name="theme-color"]');
+  function setTheme(t, animate) {
+    if (animate) {
+      root.classList.add('theme-anim');
+      setTimeout(function () { root.classList.remove('theme-anim'); }, 1300);
+    }
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('ldc-theme', t); } catch (e) {}
+    if (themeMeta) themeMeta.setAttribute('content', t === 'light' ? '#f2efe9' : '#131211');
+    window.dispatchEvent(new Event('ldc:theme'));
+  }
+  if (themeMeta && root.getAttribute('data-theme') === 'light') themeMeta.setAttribute('content', '#f2efe9');
+  window.addEventListener('ldc:themetoggle', function () {
+    setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light', true);
+  });
 })();
