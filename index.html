@@ -198,6 +198,11 @@ a{color:inherit; text-decoration:none;}
 /* timeline: a hairline from each square down to the next one (40px = .entries gap; --cy = square centre) */
 .entry{position:relative; --cy:16px;}
 .entry:not(:last-child)::before{content:""; position:absolute; left:3px; width:1px; top:var(--cy); bottom:calc(-40px - var(--cy)); background:var(--tone-2);}
+/* DISABLED (kept for later): after the last square the line goes on dashed (3px dashes, like the sphere's ring)
+   down to the end of its text; a touch stronger than the solid line so that, with its gaps, it reads as the same line.
+   To bring it back, add class="dash-tail" to <html>. */
+html.dash-tail .entry:last-child::before{content:""; position:absolute; left:3px; width:1px; top:var(--cy); bottom:0;
+  background:repeating-linear-gradient(to bottom, color-mix(in srgb, var(--ink) 20%, transparent) 0 3px, transparent 3px 6px);}
 .when .cell{position:relative; z-index:1;}
 .entry.now h3{color:var(--accent-ink);}
 .entry.now .when{color:var(--accent-ink);}
